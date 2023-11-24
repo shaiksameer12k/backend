@@ -4,17 +4,7 @@ import { ApiErr } from "../utils/ApiErr.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
-const userController = asyncApiHandel(async (req, res) => {
-  //  get user details from frontend
-  // validate - not entry
-  // check if user is already exists: username , email
-  // check for image / check for avatar
-  // upload them to cloudinary , avatar
-  // create user object - check user in db
-  // remove password and refresh token field from response
-  // check for user creation
-  // return res
-
+const registerUserController = asyncApiHandel(async (req, res) => {
   let { username, email, fullName, password } = req.body;
 
   let fields = [username, email, fullName, password];
@@ -31,17 +21,17 @@ const userController = asyncApiHandel(async (req, res) => {
   }
 
   const avatarLocalPath = req.files?.avatar[0]?.path;
-  const coverImageLocalPath = req.file?.coverImage[0]?.path;
+  // const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
   if (!avatarLocalPath) {
     throw new ApiErr(409, "Avatar is required");
   }
 
   const avatar = await uploadOnCloudinary(avatarLocalPath);
-  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+  // const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
   if (!avatar) {
-    throw new ApiErr(409, "Avatar is required");
+    throw new ApiErr(409, "Avatar has not uploaded in coludinary");
   }
 
   const user = await User.create({
@@ -50,7 +40,7 @@ const userController = asyncApiHandel(async (req, res) => {
     email,
     password,
     avatar: avatar.url,
-    coverImage: coverImage?.url || "",
+    coverImage: "",
   });
 
   const isUserCreated = await User.findById(user._id).select(
@@ -66,4 +56,4 @@ const userController = asyncApiHandel(async (req, res) => {
     .json(new ApiRes(200, isUserCreated, "Register Successfully"));
 });
 
-export { userController };
+export { registerUserController };

@@ -22,7 +22,9 @@ app.use(cookieParser());
 
 // import routs
 import userRoute from "./routes/user.routes.js";
+import createEmpRoute from "./routes/emp.routes.js";
 
 app.use("/api/v1/users", userRoute);
+app.use("/api/v1/emp", createEmpRoute);
 
 export { app };
