@@ -45,6 +45,7 @@ const userSchema = new Schema(
     refreshToken: {
       type: String,
     },
+    employeeIds: [{ type: Schema.Types.ObjectId, ref: "emps" }],
   },
   {
     timestamps: true,
